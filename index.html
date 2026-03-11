@@ -19,7 +19,10 @@
         <button id="start-btn">Tap to Start Magic</button>
     </div>
 
-    <a-scene id="scene" mindar-image="uiLoading: no; uiError: no;" embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene id="scene" mindar-image="uiLoading: no; uiError: no;" embedded="true" style="position: absolute; width: 100%; height: 100%;" ...>
+      
+      <a-assets>
+        <video id="ar-video" src="" preloa
       <a-assets>
         <video id="ar-video" src="" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline loop></video>
       </a-assets>
@@ -83,4 +86,5 @@
     </script>
   </body>
 </html>
+
 

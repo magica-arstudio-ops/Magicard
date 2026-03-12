@@ -21,7 +21,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const cardId = urlParams.get('card');
       
-      // ---> REPLACE THIS LINK WITH YOUR REAL R2 PUBLIC URL <---
       const R2_URL = "https://pub-2b81e1b686a242ef86118f97407886eb.r2.dev";
 
       const cardData = {
@@ -34,11 +33,11 @@
       if (cardId && cardData[cardId]) {
         const data = cardData[cardId];
         
-        // This injects the scene AFTER it knows what picture to look for!
+        // Notice the word "muted" at the very end of the <video> tag below!
         const sceneHTML = `
           <a-scene mindar-image="imageTargetSrc: ${data.mind}; uiLoading: no; uiError: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
             <a-assets>
-              <video id="ar-video" src="${data.video}" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline loop></video>
+              <video id="ar-video" src="${data.video}" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline loop muted></video>
             </a-assets>
             <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
             <a-entity id="target" mindar-image-target="targetIndex: 0">

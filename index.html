@@ -5,73 +5,76 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: black; font-family: sans-serif; }
+      body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; font-family: sans-serif; }
       #ui-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 20px; box-sizing: border-box; }
       .glass-panel { background: rgba(0, 0, 0, 0.7); color: white; padding: 15px 25px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(5px); }
-      #start-btn { pointer-events: auto; background: white; color: black; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 40vh; box-shadow: 0 4px 15px rgba(255,255,255,0.3); }
+      #start-btn { pointer-events: auto; background: white; color: black; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 40vh; box-shadow: 0 4px 15px rgba(255,255,255,0.3); display: none; }
     </style>
   </head>
   <body>
     <div id="ui-layer">
-        <div id="status-text" class="glass-panel" style="display: none;">
-            Loading Magic...
-        </div>
+        <div id="status-text" class="glass-panel" style="display: none;">Loading Magic...</div>
         <button id="start-btn">Tap to Start</button>
     </div>
-
-    <a-scene id="scene" mindar-image="uiLoading: no; uiError: no;" embedded="true" style="position: absolute; width: 100%; height: 100%;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      <a-assets>
-        <video id="ar-video" src="" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline loop></video>
-      </a-assets>
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity id="target" mindar-image-target="targetIndex: 0">
-        <a-video src="#ar-video" width="1" height="1" position="0 0 0"></a-video>
-      </a-entity>
-    </a-scene>
 
     <script>
       const urlParams = new URLSearchParams(window.location.search);
       const cardId = urlParams.get('card');
       
-      const startBtn = document.getElementById('start-btn');
-      const statusText = document.getElementById('status-text');
-      const scene = document.querySelector('#scene');
-      const arVideo = document.querySelector('#ar-video');
-      const targetEntity = document.querySelector('#target');
-
-      // ---> REPLACE THIS LINK WITH YOUR R2 PUBLIC URL <---
-      const R2_URL = "https://pub-2b81e1b686a242ef86118f97407886eb.r2.dev/";
+      // ---> REPLACE THIS LINK WITH YOUR REAL R2 PUBLIC URL <---
+      const R2_URL = "https://pub-2b81e1b686a242ef86118f97407886eb.r2.dev";
 
       const cardData = {
         "juda-2026": { mind: R2_URL + "/test.mind", video: R2_URL + "/test.mp4" }
       };
 
+      const startBtn = document.getElementById('start-btn');
+      const statusText = document.getElementById('status-text');
+
       if (cardId && cardData[cardId]) {
         const data = cardData[cardId];
         
-        scene.setAttribute('mindar-image', `imageTargetSrc: ${data.mind}; uiLoading: no; uiError: no;`);
-        arVideo.setAttribute('src', data.video);
+        // This injects the scene AFTER it knows what picture to look for!
+        const sceneHTML = `
+          <a-scene mindar-image="imageTargetSrc: ${data.mind}; uiLoading: no; uiError: no;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+            <a-assets>
+              <video id="ar-video" src="${data.video}" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline loop></video>
+            </a-assets>
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+            <a-entity id="target" mindar-image-target="targetIndex: 0">
+              <a-video src="#ar-video" width="1" height="1" position="0 0 0" rotation="0 0 0"></a-video>
+            </a-entity>
+          </a-scene>
+        `;
         
-        startBtn.addEventListener('click', () => {
-          arVideo.load();
-          startBtn.style.display = 'none';
-          statusText.style.display = 'block';
-          statusText.innerHTML = "Point at the Picture";
-        });
+        document.body.insertAdjacentHTML('beforeend', sceneHTML);
+        startBtn.style.display = 'block';
 
-        targetEntity.addEventListener("targetFound", () => {
-           arVideo.play();
-           statusText.innerHTML = "Magic Activated!";
-           statusText.style.background = "rgba(46, 204, 113, 0.8)";
-        });
+        setTimeout(() => {
+            const arVideo = document.querySelector('#ar-video');
+            const targetEntity = document.querySelector('#target');
 
-        targetEntity.addEventListener("targetLost", () => {
-           arVideo.pause();
-           statusText.innerHTML = "Point at the Picture";
-           statusText.style.background = "rgba(0, 0, 0, 0.7)";
-        });
+            startBtn.addEventListener('click', () => {
+              arVideo.load();
+              startBtn.style.display = 'none';
+              statusText.style.display = 'block';
+              statusText.innerHTML = "Point at the Picture";
+            });
+
+            targetEntity.addEventListener("targetFound", () => {
+               arVideo.play();
+               statusText.innerHTML = "Magic Activated!";
+               statusText.style.background = "rgba(46, 204, 113, 0.8)";
+            });
+
+            targetEntity.addEventListener("targetLost", () => {
+               arVideo.pause();
+               statusText.innerHTML = "Point at the Picture";
+               statusText.style.background = "rgba(0, 0, 0, 0.7)";
+            });
+        }, 500);
+
       } else {
-        startBtn.style.display = 'none';
         statusText.style.display = 'block';
         statusText.innerHTML = "Invalid Magic Link.";
       }

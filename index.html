@@ -32,7 +32,7 @@
         "satwik": { 
             mind: R2_URL + "/satwik.mind", 
             video: R2_URL + "/satwik.mp4",
-            rotation: "-135 0 180",  // -70 makes it lean 70 degrees, 180 flips it perfectly right-side up!
+            rotation: "-135 0 180", 
             scale: "3 3 1",       
             position: "0 0 1.5"   
         },
@@ -41,9 +41,10 @@
         "harshavarsha": {
             mind: R2_URL + "/harshavarsha.mind", 
             video: R2_URL + "/harshavarsha.mp4",
-            rotation: "-155 0 180",  // -70 makes it lean 70 degrees, 180 flips it perfectly right-side up!
+            rotation: "-155 0 180", 
             scale: "3 3 1",       
             position: "0 0 1.5"   
+        } // FIX: Added the missing closing brace here!
       };
 
       const startBtn = document.getElementById('start-btn');
@@ -72,37 +73,51 @@
         document.body.insertAdjacentHTML('beforeend', sceneHTML);
         startBtn.style.display = 'block';
 
-        setTimeout(() => {
-            const arVideo = document.querySelector('#ar-video');
-            const targetEntity = document.querySelector('#target');
+        // FIX: Removed setTimeout. We can query these right away since they were just inserted.
+        const arVideo = document.querySelector('#ar-video');
+        const targetEntity = document.querySelector('#target');
 
-            startBtn.addEventListener('click', () => {
-              arVideo.load();
-              startBtn.style.display = 'none';
-              statusText.style.display = 'block';
-              statusText.innerHTML = "Point at the Picture";
-              // Show the mute button when camera starts
-              muteBtn.style.display = 'block';
-            });
-            
-            // Sound Button Logic
-            muteBtn.addEventListener('click', () => {
-                if (arVideo.muted) {
-                    arVideo.muted = false;
-                    muteBtn.innerHTML = "🔊 Sound Is On!";
-                    muteBtn.style.background = "rgba(46, 204, 113, 0.8)"; // Turns green
-                } else {
-                    arVideo.muted = true;
-                    muteBtn.innerHTML = "🔇 Tap for Sound";
-                    muteBtn.style.background = "rgba(0, 0, 0, 0.7)"; // Turns dark
-                }
-            });
+        startBtn.addEventListener('click', () => {
+          arVideo.load();
+          startBtn.style.display = 'none';
+          statusText.style.display = 'block';
+          statusText.innerHTML = "Point at the Picture";
+          // Show the mute button when camera starts
+          muteBtn.style.display = 'block';
+        });
+        
+        // Sound Button Logic
+        muteBtn.addEventListener('click', () => {
+            if (arVideo.muted) {
+                arVideo.muted = false;
+                muteBtn.innerHTML = "🔊 Sound Is On!";
+                muteBtn.style.background = "rgba(46, 204, 113, 0.8)"; // Turns green
+            } else {
+                arVideo.muted = true;
+                muteBtn.innerHTML = "🔇 Tap for Sound";
+                muteBtn.style.background = "rgba(0, 0, 0, 0.7)"; // Turns dark
+            }
+        });
 
-            targetEntity.addEventListener("targetFound", () => {
-               arVideo.play();
-               statusText.innerHTML = "Magic Activated!";
-               statusText.style.background = "rgba(46, 204, 113, 0.8)";
-            });
+        targetEntity.addEventListener("targetFound", () => {
+           arVideo.play();
+           statusText.innerHTML = "Magic Activated!";
+           statusText.style.background = "rgba(46, 204, 113, 0.8)";
+        });
+
+        targetEntity.addEventListener("targetLost", () => {
+           arVideo.pause();
+           statusText.innerHTML = "Point at the Picture";
+           statusText.style.background = "rgba(0, 0, 0, 0.7)";
+        });
+
+      } else {
+        statusText.style.display = 'block';
+        statusText.innerHTML = "Invalid Magic Link.";
+      }
+    </script>
+  </body>
+</html>
 
             targetEntity.addEventListener("targetLost", () => {
                arVideo.pause();

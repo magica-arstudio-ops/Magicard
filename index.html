@@ -37,24 +37,36 @@
       
       const R2_URL = "https://pub-2b81e1b686a242ef86118f97407886eb.r2.dev";
 
-      const cardData = {
+            const cardData = {
         "juda-2026": { mind: R2_URL + "/test.mind", video: R2_URL + "/test.mp4" },
         "satwik": { 
             mind: R2_URL + "/satwik.mind", 
             video: R2_URL + "/satwik.mp4",
-            rotation: "-135 0 180", 
-            scale: "-3 3 1",       // Fixed: Negative X scale to un-mirror
+            rotation: "-135 0 180",  
+            scale: "3 3 1",       
             position: "0 0 1.5"   
         },
-        "ninja": { mind: R2_URL + "/ninja.mind", video: R2_URL + "/ninja.mp4" },
-        "megha": { mind: R2_URL + "/megha.mind", video: R2_URL + "/megha.mp4" },
+        "ninja": { 
+            mind: R2_URL + "/ninja.mind", 
+            video: R2_URL + "/ninja.mp4",
+            rotation: "-125 0 180",  
+            scale: "2 2 1",       
+            position: "0 0 1.5"   
+        },
+        "megha": { 
+            mind: R2_URL + "/megha.mind", 
+            video: R2_URL + "/megha.mp4",
+            rotation: "-125 0 180",  
+            scale: "2 2 1",       
+            position: "0 0 1.5"   
+        },
         "harshavarsha": {
             mind: R2_URL + "/harshavarsha.mind", 
             video: R2_URL + "/harshavarsha.mp4",
-            rotation: "-155 0 180", 
-            scale: "-2 2 1",       // Fixed: Negative X scale to un-mirror
+            rotation: "-155 0 180",  
+            scale: "3 3 1",       
             position: "0 0 1.5"   
-        }
+        } 
       };
 
       const startBtn = document.getElementById('start-btn');

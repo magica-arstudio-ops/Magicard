@@ -67,8 +67,11 @@
             scale: "3 3 1",       
             position: "0 0 1.5"   
         },
-        "weddingcard": { mind: R2_URL + "/weddingcard.mind", video: R2_URL + "/weddingcard.mp4" },
-      };
+        "weddingcard": { 
+            mind: R2_URL + "/weddingcard.mind", 
+            video: R2_URL + "/weddingcard.mp4",
+            scale: "1 1 1"   // FIX: Positive 1 flips it back to normal!
+        }
 
       const startBtn = document.getElementById('start-btn');
       const statusText = document.getElementById('status-text');
